@@ -22,8 +22,8 @@ class WeatherMinMax {
 
 class _WeatherChartState extends State<WeatherChart> {
   WeatherMinMax get getMinMax {
-    int min = 256;
-    int max = -256;
+    double min = 256;
+    double max = -256;
 
     widget.hourlyForecast.forEach((key, value) {
       if (value.temperature < min) {
@@ -39,9 +39,11 @@ class _WeatherChartState extends State<WeatherChart> {
 
   List<LineChartBarData> getChartData() {
     List<FlSpot> spots = [];
+    DateTime now = DateTime.now();
+
 
     widget.hourlyForecast.forEach((key, value) {
-      spots.add(FlSpot(key.hour.toDouble(), value.temperature.toDouble()));
+        spots.add(FlSpot(key.hour.toDouble(), value.temperature.toDouble()));
     });
 
     return [

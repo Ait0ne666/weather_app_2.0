@@ -26,7 +26,7 @@ class MainWeather extends StatelessWidget {
           children: [
             Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(
-                weather.temperature.toString(),
+                weather.temperature.round().toString(),
                 style: TextStyle(
                     fontSize: 100,
                     fontWeight: FontWeight.bold,

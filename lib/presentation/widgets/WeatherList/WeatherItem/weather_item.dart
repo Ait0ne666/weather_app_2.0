@@ -130,10 +130,12 @@ class WeatherItem extends StatelessWidget {
                 ),
                 Container(
                   margin: EdgeInsets.only(left: 4),
-                  child: Text(
-                    weather.temperature.toString() + '°',
-                    style: TextStyle(color: Colors.white, fontSize: 20),
-                    textAlign: TextAlign.center,
+                  child: FittedBox(
+                    child: Text(
+                      weather.dayTemp.round().toString() + '°/' + weather.nightTemp.round().toString() + '°' ,
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
                 SizedBox(
