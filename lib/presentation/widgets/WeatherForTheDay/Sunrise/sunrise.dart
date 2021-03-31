@@ -50,7 +50,65 @@ class HorizonPainter extends CustomPainter {
   }
 }
 
-class Sunrise extends StatelessWidget {
+enum HeavenBody { SUN, MOON }
+
+class Sunrise extends StatefulWidget {
+  final DateTime sunrise;
+  final DateTime sunset;
+
+  Sunrise({this.sunrise, this.sunset});
+
+  @override
+  _SunriseState createState() => _SunriseState();
+}
+
+class _SunriseState extends State<Sunrise> with SingleTickerProviderStateMixin {
+  AnimationController _controller;
+  Animation<double> offset;
+  HeavenBody heavenBody = HeavenBody.SUN;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 1600),
+    );
+    var dayDuration = widget.sunset.difference(widget.sunrise).inMilliseconds;
+    var dayPercentage;
+    double maxOffset = 30;
+
+    if (DateTime.now().isBefore(widget.sunrise)) {
+      dayPercentage = 1;
+      setState(() {
+        heavenBody = HeavenBody.MOON;
+      });
+    } else if (DateTime.now().isAfter(widget.sunset)) {
+      dayPercentage = 1;
+      setState(() {
+        heavenBody = HeavenBody.MOON;
+      });
+    } else {
+      var dayGone = DateTime.now().difference(widget.sunrise).inMilliseconds;
+      if (dayGone > dayDuration / 2) {
+        dayPercentage = (dayGone - dayDuration / 2) / dayDuration / 2;
+      } else {
+        dayPercentage = dayGone / dayDuration / 2;
+      }
+    }
+
+    print(dayPercentage);
+    offset = Tween<double>(begin: -100, end: maxOffset * dayPercentage)
+        .animate(_controller);
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ClipPath(
@@ -60,10 +118,31 @@ class Sunrise extends StatelessWidget {
         child: Container(
           width: 150,
           height: 100,
-          child: Align(
+          child: Stack(
             alignment: Alignment.bottomCenter,
-            child: SvgPicture.asset('assets/sunny.svg',
-                width: 50, height: 50, fit: BoxFit.fitWidth),
+            children: [
+              AnimatedBuilder(
+                animation: _controller,
+                builder: (context, child) {
+                  return Positioned(
+                    bottom: offset.value,
+                    child: Container(
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: SvgPicture.asset(
+                            heavenBody == HeavenBody.SUN
+                                ? 'assets/sunny.svg'
+                                : 'assets/SVG/night_half_moon_clear.svg',
+                            width: 50,
+                            height: 50,
+                            color: Colors.white,
+                            fit: BoxFit.fitWidth),
+                      ),
+                    ),
+                  );
+                },
+              )
+            ],
           ),
         ),
       ),

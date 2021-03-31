@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:weather_app2/domain/entities/Weather/weather.dart';
+import 'package:weather_app2/presentation/utils/mapWeatherConditionsToAsset.dart';
 
 class WeatherItem extends StatelessWidget {
   final DateTime date;
@@ -90,6 +91,11 @@ class WeatherItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DateFormat format = DateFormat('dd.MM HH:mm');
+
+    print(format.format(weather.sunrise));
+    print(format.format(weather.sunset));
+    print(format.format(date));
     return Center(
       child: ClipRect(
         child: BackdropFilter(
@@ -123,7 +129,12 @@ class WeatherItem extends StatelessWidget {
                 ),
                 Container(
                     child: Center(
-                  child: getItemPicture(weather.conditions),
+                  child: Image.asset(
+                    mapWeatherConditionsToAsset(weather.conditions, date,
+                        weather.sunrise, weather.sunset),
+                    width: 22,
+                    height: 22,
+                  ),
                 )),
                 SizedBox(
                   height: 5,
@@ -132,7 +143,10 @@ class WeatherItem extends StatelessWidget {
                   margin: EdgeInsets.only(left: 4),
                   child: FittedBox(
                     child: Text(
-                      weather.dayTemp.round().toString() + '°/' + weather.nightTemp.round().toString() + '°' ,
+                      weather.dayTemp.round().toString() +
+                          '°/' +
+                          weather.nightTemp.round().toString() +
+                          '°',
                       style: TextStyle(color: Colors.white, fontSize: 20),
                       textAlign: TextAlign.center,
                     ),

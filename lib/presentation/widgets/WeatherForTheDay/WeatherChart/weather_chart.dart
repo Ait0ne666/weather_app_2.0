@@ -1,13 +1,15 @@
-import 'dart:ui';
-
-import 'package:fl_chart/fl_chart.dart';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:weather_app2/domain/entities/Weather/weather.dart';
+import 'package:weather_app2/presentation/widgets/WeatherForTheDay/WeatherChart/chart_data/chart_data.dart';
 
 class WeatherChart extends StatefulWidget {
-  final Map<DateTime, Weather> hourlyForecast;
+  final List<Weather> hourlyForecast;
+  final DateTime sunset;
+  final DateTime sunrise;
 
-  WeatherChart(this.hourlyForecast);
+  WeatherChart(this.hourlyForecast, this.sunrise, this.sunset);
 
   @override
   _WeatherChartState createState() => _WeatherChartState();
@@ -20,12 +22,28 @@ class WeatherMinMax {
   WeatherMinMax({this.max, this.min});
 }
 
+List<String> assets = [
+  "assets/128/night_half_moon_clear.png",
+  "assets/128/day_clear.png",
+  "assets/128/cloudy.png",
+  "assets/128/night_half_moon_partial_cloud.png",
+  "assets/128/day_partial_cloud.png",
+  "assets/128/mist.png",
+  "assets/128/night_half_moon_rain.png",
+  "assets/128/day_rain.png",
+  "assets/128/overcast.png",
+  "assets/128/night_half_moon_snow.png",
+  "assets/128/day_snow.png",
+  "assets/128/night_half_moon_rain_thunder.png",
+  "assets/128/day_rain_thunder.png",
+];
+
 class _WeatherChartState extends State<WeatherChart> {
   WeatherMinMax get getMinMax {
     double min = 256;
     double max = -256;
 
-    widget.hourlyForecast.forEach((key, value) {
+    widget.hourlyForecast.forEach((value) {
       if (value.temperature < min) {
         min = value.temperature;
       }
@@ -37,63 +55,38 @@ class _WeatherChartState extends State<WeatherChart> {
     return WeatherMinMax(min: min.toDouble(), max: max.toDouble());
   }
 
-  List<LineChartBarData> getChartData() {
-    List<FlSpot> spots = [];
-    DateTime now = DateTime.now();
+  Future<ui.Image> loadImage(String asset) async {
+    final ByteData data = await rootBundle.load(asset);
+    final ui.Codec codec = await ui.instantiateImageCodec(
+      data.buffer.asUint8List(),
+      targetHeight: 20,
+      targetWidth: 20,
+    );
+    final ui.FrameInfo fi = await codec.getNextFrame();
 
-
-    widget.hourlyForecast.forEach((key, value) {
-        spots.add(FlSpot(key.hour.toDouble(), value.temperature.toDouble()));
-    });
-
-    return [
-      LineChartBarData(
-        spots: spots,
-        isCurved: false,
-        barWidth: 2,
-        colors: [
-          Colors.white38,
-        ],
-        dotData: FlDotData(
-          show: true,
-          getDotPainter: (spot, percent, barData, index) => FlDotCirclePainter(
-              radius: 3, color: Colors.white, strokeColor: Colors.white),
-        ),
-        belowBarData: BarAreaData(
-            show: true,
-            colors: [Colors.transparent],
-            spotsLine: BarAreaSpotsLine(
-              show: true,
-              flLineStyle: FlLine(
-                  color: Colors.white.withOpacity(0.8),
-                  strokeWidth: 1,
-                  dashArray: [5, 5]),
-              checkToShowSpotLine: (spot) => true,
-            )),
-      ),
-    ];
+    return fi.image;
   }
 
-  List<int> getShowingIndexes() {
-    List<int> result = [];
+  Future<Map<String, ui.Image>> loadImages() async {
+    Map<String, ui.Image> images = {};
 
-    for (var i = 0; i < widget.hourlyForecast.entries.length; i++) {
-      result.add(i);
+    for (int i = 0; i < assets.length; i++) {
+      ui.Image image = await loadImage(assets[i]);
+      images[assets[i]] = image;
     }
-    return result;
+
+    return images;
   }
 
   @override
   Widget build(BuildContext context) {
-    var chart = getChartData();
-
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 15),
       margin: EdgeInsets.only(bottom: 50),
       child: Center(
         child: ClipRect(
           child: BackdropFilter(
-            filter: ImageFilter.blur(
+            filter: ui.ImageFilter.blur(
               sigmaX: 40,
               sigmaY: 40,
             ),
@@ -114,69 +107,23 @@ class _WeatherChartState extends State<WeatherChart> {
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
                   height: 180,
-                  width: 800,
-                  child: LineChart(
-                    LineChartData(
-                        showingTooltipIndicators: getShowingIndexes()
-                            .map((index) => ShowingTooltipIndicators(index, [
-                                  LineBarSpot(
-                                      chart[0], 0, chart[0].spots[index])
-                                ]))
-                            .toList(),
-                        lineBarsData: chart,
-                        gridData: FlGridData(show: false),
-                        borderData: FlBorderData(show: false),
-                        titlesData: FlTitlesData(
-                          show: true,
-                          leftTitles: SideTitles(showTitles: false),
-                          bottomTitles: SideTitles(
-                              getTitles: (hour) =>
-                                  hour.toInt().toString() + ':00',
-                              getTextStyles: (hour) =>
-                                  TextStyle(color: Colors.white, fontSize: 11),
-                              showTitles: true),
-                        ),
-                        minY: getMinMax.min - 5,
-                        maxY: getMinMax.max + 5,
-                        lineTouchData: LineTouchData(
-                          enabled: false,
-                          getTouchedSpotIndicator: (LineChartBarData barData,
-                              List<int> spotIndexes) {
-                            return spotIndexes.map((index) {
-                              return TouchedSpotIndicatorData(
-                                FlLine(color: Colors.black, strokeWidth: 2),
-                                FlDotData(
-                                  show: true,
-                                  getDotPainter:
-                                      (spot, percent, barData, index) =>
-                                          FlDotCirclePainter(
-                                    radius: 8,
-                                    color: Colors.blue,
-                                    strokeWidth: 8,
-                                    strokeColor: Colors.black,
-                                  ),
-                                ),
-                              );
-                            }).toList();
-                          },
-                          touchTooltipData: LineTouchTooltipData(
-                            tooltipBgColor: Colors.transparent,
-                            tooltipMargin: 0,
-                            tooltipPadding: EdgeInsets.only(bottom: 7),
-                            // tooltipRoundedRadius: 8,
-                            getTooltipItems: (List<LineBarSpot> lineBarsSpot) {
-                              return lineBarsSpot.map((lineBarSpot) {
-                                return LineTooltipItem(
-                                  lineBarSpot.y.toInt().toString() + '°',
-                                  TextStyle(
-                                    color: Colors.white,
-                                  ),
-                                );
-                              }).toList();
-                            },
-                          ),
-                        )),
-                  ),
+                  width: 2500,
+                  child: FutureBuilder(
+                      future: loadImages(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          return ChartData(
+                            hourlyForecast: widget.hourlyForecast,
+                            images: snapshot.data,
+                            max: getMinMax.max,
+                            min: getMinMax.min,
+                            sunrise: widget.sunrise,
+                            sunset: widget.sunset,
+                          );
+                        } else {
+                          return CircularProgressIndicator();
+                        }
+                      }),
                 ),
               ),
             ),

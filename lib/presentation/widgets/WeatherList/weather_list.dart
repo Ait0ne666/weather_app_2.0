@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:weather_app2/domain/entities/Weather/weather.dart';
 import 'package:weather_app2/presentation/widgets/WeatherList/Pagination/pagination.dart';
 import 'package:weather_app2/presentation/widgets/WeatherList/WeatherItem/weather_item.dart';
@@ -19,11 +18,9 @@ class _WeatherListState extends State<WeatherList> {
   List<Widget> getWeatherList(weatherData) {
     List<Widget> result = [];
 
-    weatherData.asMap().forEach((index, weather) {
+    weatherData.asMap().forEach((index, Weather weather) {
       result.add(WeatherItem(
-        weather: weather,
-        date: weather.time
-      ));
+          weather: weather, date: weather.sunrise.add(Duration(hours: 4))));
       if (index < weatherData.length - 1) {
         result.add(SizedBox(width: 8));
       }

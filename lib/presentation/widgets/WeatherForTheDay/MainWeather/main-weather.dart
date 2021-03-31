@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:weather_app2/domain/entities/Weather/weather.dart';
+import 'package:weather_app2/presentation/utils/mapWeatherConditionsToAsset.dart';
 
 class MainWeather extends StatelessWidget {
-  final Weather weather;
+  final WeatherWithHourlyForecast weather;
 
   MainWeather({this.weather});
 
@@ -18,6 +19,7 @@ class MainWeather extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('444' + weather.sunrise.toString());
     return Column(
       children: [
         Row(
@@ -40,7 +42,13 @@ class MainWeather extends StatelessWidget {
                     color: Colors.white),
               )
             ]),
-            Image.asset('assets/sunny.png'),
+            Center(
+              child: Image.asset(
+                  mapWeatherConditionsToAsset(weather.conditions,
+                      DateTime.now(), weather.sunrise, weather.sunset),
+                  width: 120,
+                  height: 120),
+            ),
           ],
         ),
         // SizedBox(

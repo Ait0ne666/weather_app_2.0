@@ -14,7 +14,9 @@ import 'package:path_provider/path_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  HydratedBloc.storage = await HydratedStorage.build(storageDirectory: await getTemporaryDirectory(),);
+  HydratedBloc.storage = await HydratedStorage.build(
+    storageDirectory: await getApplicationDocumentsDirectory(),
+  );
   NavigationRouter.setupRouter();
   runApp(MyApp());
 }
@@ -28,9 +30,12 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   CitiesBloc citiesBloc;
 
-  @override 
+  @override
   void initState() {
-    citiesBloc = CitiesBloc(getCity: GetCity(repository: CityRepositoryImpl(RemoteDataSource()), locationService: LocationService()));
+    citiesBloc = CitiesBloc(
+        getCity: GetCity(
+            repository: CityRepositoryImpl(RemoteDataSource()),
+            locationService: LocationService()));
     citiesBloc.add(AppStarted());
     super.initState();
   }
@@ -41,35 +46,49 @@ class _MyAppState extends State<MyApp> {
     super.dispose();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider<CitiesBloc>(
       create: (context) => citiesBloc,
       child: MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        // home: MainScreen(),
-        onGenerateRoute: NavigationRouter.router.generator,
-        home: BlocListener<CitiesBloc, CitiesState>(
-          listener: (context, state) {
-            print(state);
-            if (state is ShouldLoadCities) {
-              BlocProvider.of<CitiesBloc>(context).add(UpdateCities());
-            } else if (state is CitiesLoaded) {
-              NavigationRouter.router.navigateTo(context, '/main', transition: TransitionType.fadeIn, clearStack: true);
-            } else if (state is NoCities) {
-              NavigationRouter.router.navigateTo(context, '/welcome', transition: TransitionType.fadeIn);
-            }
-          },
-          child: Scaffold(
-            body: Center(child: Container(child: Text('loading'),)),
-          )
-        )
-      ),
+          title: 'Flutter Demo',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+          ),
+          // home: MainScreen(),
+          onGenerateRoute: NavigationRouter.router.generator,
+          home: BlocListener<CitiesBloc, CitiesState>(
+              listener: (context, state) {
+                print(state);
+                if (state is ShouldLoadCities) {
+                  BlocProvider.of<CitiesBloc>(context).add(UpdateCities());
+                } else if (state is CitiesLoaded) {
+                  NavigationRouter.router.navigateTo(context, '/main',
+                      transition: TransitionType.fadeIn, clearStack: true);
+                } else if (state is NoCities) {
+                  NavigationRouter.router.navigateTo(context, '/welcome',
+                      transition: TransitionType.fadeIn);
+                } else if (state is CitiesError) {
+                  final SnackBar snackBar = SnackBar(
+                    content: Text(state.message),
+                    backgroundColor: Color(0xff631961),
+                    action: SnackBarAction(
+                      label: 'Close',
+                      onPressed: () =>
+                          ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+                      textColor: Color(0xffE94057),
+                    ),
+                  );
+
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                }
+              },
+              child: Scaffold(
+                body: Center(
+                    child: Container(
+                  child: Text('loading'),
+                )),
+              ))),
     );
   }
 }
