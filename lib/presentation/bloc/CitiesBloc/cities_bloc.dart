@@ -69,6 +69,13 @@ class CitiesBloc extends HydratedBloc<CitiesEvent, CitiesState> {
           yield CitiesError(error.toString());
         }
       }
+    } else if (event is ChangeCity) {
+      if (_cities[event.city] != null) {
+        _currentCity = event.city;
+        yield CitiesLoaded(currentCity: event.city, cities: _cities);
+      } else {
+        yield CitiesError('No such city loaded');
+      }
     }
   }
 

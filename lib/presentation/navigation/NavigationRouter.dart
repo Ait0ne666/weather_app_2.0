@@ -1,5 +1,6 @@
 import 'package:fluro/fluro.dart';
 import 'package:weather_app2/presentation/screens/cities_screen.dart';
+import 'package:weather_app2/presentation/screens/city_search_screen.dart';
 import 'package:weather_app2/presentation/screens/main_screen.dart';
 import 'package:weather_app2/presentation/screens/welcome_screen.dart';
 
@@ -15,9 +16,13 @@ class NavigationRouter {
   static Handler _citiesHandler =
       Handler(handlerFunc: (context, parameters) => CitiesScreen());
 
+  static Handler _searchHandler =
+      Handler(handlerFunc: (context, parameters) => CitySearchScreen());
+
   static void setupRouter() {
     router.define('/main', handler: _weatherForTheDayHandler);
     router.define('/welcome', handler: _welcomeHandler);
     router.define('/cities', handler: _citiesHandler);
+    router.define('/citySearch', handler: _searchHandler);
   }
 }

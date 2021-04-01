@@ -22,3 +22,14 @@ class GetCityByLocation extends CitiesEvent {
 class UpdateCities extends CitiesEvent {
 
 }
+
+
+
+class ChangeCity extends CitiesEvent {
+  final String city;
+
+  ChangeCity(this.city);
+  
+  @override
+  List<Object> get props => [city];
+}

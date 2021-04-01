@@ -20,9 +20,15 @@ class CitiesScreen extends StatelessWidget {
         .navigateTo(context, '/main', transition: TransitionType.fadeIn);
   }
 
+
+  void navigateToSearch(BuildContext context) {
+    NavigationRouter.router.navigateTo(context, '/citySearch', transition: TransitionType.fadeIn);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        floatingActionButton: FloatingActionButton( child: Icon(Icons.add, size: 40,), onPressed: () => navigateToSearch(context), backgroundColor: Color(0xff631961),),
         body: Stack(
       children: [
         Sky(

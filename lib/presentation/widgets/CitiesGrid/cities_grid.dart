@@ -1,5 +1,7 @@
+import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:weather_app2/domain/entities/City/city.dart';
+import 'package:weather_app2/presentation/navigation/NavigationRouter.dart';
 import 'package:weather_app2/presentation/widgets/CitiesGrid/GridItem/grid_item.dart';
 
 class CitiesGrid extends StatelessWidget {
@@ -7,9 +9,16 @@ class CitiesGrid extends StatelessWidget {
 
   CitiesGrid({this.cities});
 
+    void navigateToCity(BuildContext context) {
+
+    NavigationRouter.router.navigateTo(context, '/main', transition: TransitionType.fadeIn);
+  }
+
+
+
   List<Widget> getCitiesList(final Map<String, City> cities) {
     return cities.entries.map((e) {
-      return GridItem(e.value);
+      return GridItem(e.value, navigateToCity);
     }).toList();
   }
 
