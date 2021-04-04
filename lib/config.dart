@@ -13,4 +13,11 @@ class ConfigOptions {
   }
 
 
+
+  Uri autocompleteRequest(String query) {
+    return Uri.parse('https://autocomplete.travelpayouts.com/places2?term=$query&locale=en&types[]=city');
+  }
+
+
+
 }

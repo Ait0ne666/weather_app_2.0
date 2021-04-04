@@ -44,22 +44,34 @@ class CitiesBloc extends HydratedBloc<CitiesEvent, CitiesState> {
     } else if (event is UpdateCities) {
       if (_currentCity != null && _cities[_currentCity] != null) {
         try {
-          City city;
-          String message;
+          Map<String, City> newCities = {};
+          String errorMessage;
 
           yield CitiesUpdating(cities: _cities, currentCity: _currentCity);
 
-          var result = await getCity
-              .getCityByLocation(_cities[_currentCity].coordinates);
 
-          result.fold((l) => message = l.message, (r) => city = r);
+          await Future.forEach(_cities.entries, (MapEntry<String, City> element) async {
+            City city;
+            String message;
 
-          if (city != null) {
-            _currentCity = city.name;
-            _cities[city.name] = city;
+            var result = await getCity
+                .getCityByLocation(element.value.coordinates);
+
+            result.fold((l) => message = l.message, (r) => city = r);
+
+            if (city != null) {
+                            
+              newCities[city.name] = city;
+            } else if (message != null) {
+              errorMessage = message;
+            }
+          });
+
+          if (errorMessage == null) {
+            _cities = newCities;
             yield CitiesLoaded(currentCity: _currentCity, cities: _cities);
-          } else if (message != null) {
-            yield CitiesError(message);
+          } else  {
+            yield CitiesError(errorMessage);
             if (_currentCity != null && _cities[_currentCity] != null) {
               yield CitiesLoaded(cities: _cities, currentCity: _currentCity);
             }
@@ -76,6 +88,33 @@ class CitiesBloc extends HydratedBloc<CitiesEvent, CitiesState> {
       } else {
         yield CitiesError('No such city loaded');
       }
+    } else if (event is AddCity) {
+        City city;
+        String message;
+        yield CitiesLoading();    
+
+        try {
+          var result = await getCity.getCityByLocation(event.location);
+
+
+          result.fold((l) => message = l.message, (r) => city = r);
+
+          
+          if (city != null) {
+            _currentCity = city.name;
+            _cities[city.name] = city;
+
+            yield CitiesLoaded(currentCity: _currentCity, cities: _cities);
+          } else if (message != null) {
+            yield CitiesError(message);
+          }
+        } catch (error) {
+          yield CitiesError(error.toString());
+        }
+
+
+
+
     }
   }
 

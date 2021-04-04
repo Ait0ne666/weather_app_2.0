@@ -18,7 +18,7 @@ class WelcomeForm extends StatelessWidget {
   }
 
   void handlePickCity(BuildContext context) {
-    
+    NavigationRouter.router.navigateTo(context, '/citySearch', transition: TransitionType.cupertino);
   }
 
 

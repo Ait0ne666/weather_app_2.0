@@ -1,39 +1,36 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weather_app2/domain/entities/Weather/weather.dart';
 import 'package:weather_app2/presentation/bloc/CitiesBloc/cities_bloc.dart';
-import 'package:weather_app2/presentation/bloc/CitiesBloc/cities_event.dart';
 import 'package:weather_app2/presentation/bloc/CitiesBloc/cities_state.dart';
 import 'package:weather_app2/presentation/navigation/NavigationRouter.dart';
 import 'package:weather_app2/presentation/screens/ScreenWrapper/screen-wrapper.dart';
-import 'package:weather_app2/presentation/widgets/CitiesGrid/cities_grid.dart';
+import 'package:weather_app2/presentation/widgets/DayWeatherDetail/day_weather_detail.dart';
 import 'package:weather_app2/presentation/widgets/common/FailureScreen/failure_screen.dart';
 
-class CitiesScreen extends StatelessWidget {
-  void tryUpdatingLocation(BuildContext context) {
-    BlocProvider.of<CitiesBloc>(context).add(UpdateCities());
-  }
 
-  void closeCitiesMenu(BuildContext context) {
-    NavigationRouter.router
-        .navigateTo(context, '/main', transition: TransitionType.fadeIn);
-  }
+class DayDetail extends StatelessWidget {
+  final Weather dayWeather;
 
 
-  void navigateToSearch(BuildContext context) {
-    NavigationRouter.router.navigateTo(context, '/citySearch', transition: TransitionType.cupertino);
+  DayDetail(this.dayWeather);
+
+  void navigateBack(BuildContext context) {
+    NavigationRouter.router.navigateTo(context, '/main', transition: TransitionType.cupertino);
   }
+
+
 
   @override
   Widget build(BuildContext context) {
     return ScreenWrapper(
-      fab: FloatingActionButton( child: Icon(Icons.add, size: 40,), onPressed: () => navigateToSearch(context), backgroundColor: Color(0xff631961),),
       children: [
-                Positioned(
+        Positioned(
           child:
               BlocBuilder<CitiesBloc, CitiesState>(builder: (context, state) {
             if (state is CitiesLoaded || state is CitiesUpdating) {
-              return CitiesGrid(cities: state.cities, currentCity: state.currentCity,);
+              return DayWeatherDetail(dayWeather: dayWeather,);
             } else {
               return FailureScreen();
             }
@@ -47,16 +44,15 @@ class CitiesScreen extends StatelessWidget {
               child: Row(children: [
                 IconButton(
                   icon: Icon(
-                    Icons.close,
+                    Icons.arrow_back,
                     color: Colors.white,
                   ),
                   iconSize: 35,
-                  onPressed: () => closeCitiesMenu(context),
+                  onPressed: () => navigateBack(context),
                 ),
               ]),
             ))
       ],
     );
+  }
 }
-}
-        

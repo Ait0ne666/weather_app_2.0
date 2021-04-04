@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_app2/presentation/bloc/CitiesBloc/cities_bloc.dart';
 import 'package:weather_app2/presentation/bloc/CitiesBloc/cities_state.dart';
 import 'package:weather_app2/presentation/navigation/NavigationRouter.dart';
+import 'package:weather_app2/presentation/screens/ScreenWrapper/screen-wrapper.dart';
 import 'package:weather_app2/presentation/widgets/WelcomeForm/welcome_Form.dart';
-import 'package:weather_app2/presentation/widgets/common/Sky/sky.dart';
 
 class WelcomeScreen extends StatelessWidget {
   final List<Color> gradientColors = [
@@ -21,13 +21,9 @@ class WelcomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          Sky(
-            gradientColors: gradientColors,
-          ),
-          WelcomeForm(gradientColors),
+    return ScreenWrapper(
+      children: [
+                  WelcomeForm(gradientColors),
           BlocBuilder<CitiesBloc, CitiesState>(builder: (context, state) {
             if (state is CitiesLoading) {
               return Container(
@@ -41,8 +37,7 @@ class WelcomeScreen extends StatelessWidget {
               return SizedBox();
             }
           })
-        ],
-      ),
+      ],
     );
   }
 }

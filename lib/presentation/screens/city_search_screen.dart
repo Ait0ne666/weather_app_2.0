@@ -1,21 +1,43 @@
+import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weather_app2/presentation/bloc/CitiesBloc/cities_bloc.dart';
+import 'package:weather_app2/presentation/bloc/CitiesBloc/cities_state.dart';
+import 'package:weather_app2/presentation/navigation/NavigationRouter.dart';
+import 'package:weather_app2/presentation/screens/ScreenWrapper/screen-wrapper.dart';
+import 'package:weather_app2/presentation/widgets/AutocompleteSearch/autocomplete-search.dart';
 import 'package:weather_app2/presentation/widgets/common/Sky/sky.dart';
-
-
 
 class CitySearchScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: Stack(children: [
-      Sky(
-        gradientColors: [
-          Color(0xff631961),
-          Color(0xffE94057),
-          Color(0xffF27121)
-        ],
-      ),
-
-    ]),);
+    return ScreenWrapper(
+      children: [
+        BlocListener<CitiesBloc, CitiesState>(
+          child: AutocompleteSearch(),
+          listener: (context, state) => {
+            if (state is CitiesLoaded) {
+              NavigationRouter.router.navigateTo(context, '/main', transition: TransitionType.fadeIn)
+            }
+          },
+        ),
+        BlocBuilder<CitiesBloc, CitiesState>(
+          builder: (context, state) {
+            if (state is  CitiesLoading) {
+              return Container(
+                
+                alignment: Alignment.center,
+                color: Colors.black.withOpacity(0.4),
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xffF27121)),
+                ),
+              );
+            } else {
+              return SizedBox();
+            }
+          },
+        ),
+      ],
+    );
   }
 }

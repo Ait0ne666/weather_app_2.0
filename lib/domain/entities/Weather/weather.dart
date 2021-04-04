@@ -65,9 +65,18 @@ class Weather extends Equatable {
   final double windSpeed;
   final double dayTemp;
   final double nightTemp;
+  final double eveTemp;
+  final double mornTemp;
   final DateTime time;
   final DateTime sunset;
   final DateTime sunrise;
+  final double pressure;
+  final int humidity;
+  final int pop;
+  final double dewPoint;
+  final int clouds;
+  final double uvi;
+
 
   Weather(
       {this.temperature,
@@ -77,7 +86,16 @@ class Weather extends Equatable {
       this.nightTemp,
       this.time,
       this.sunrise,
-      this.sunset});
+      this.sunset,
+      this.eveTemp,
+      this.humidity,
+      this.mornTemp,
+      this.pop,
+      this.pressure,
+      this.clouds,
+      this.dewPoint,
+      this.uvi
+      });
 
   List<Object> get props => [temperature, conditions, windSpeed];
 
@@ -90,7 +108,16 @@ class Weather extends Equatable {
       "nightTemp": nightTemp,
       "time": time.toString(),
       "sunset": sunset.toString(),
-      "sunrise": sunrise.toString()
+      "sunrise": sunrise.toString(),
+      "eveTemp": eveTemp,
+      "mornTemp": mornTemp,
+      "humidity": humidity,
+      "pressure": pressure,
+      "pop": pop,
+      "uvi": uvi,
+      "dewPoint": dewPoint,
+      "clouds": clouds
+
     };
   }
 
@@ -103,6 +130,15 @@ class Weather extends Equatable {
         nightTemp: json["nightTemp"],
         time: DateTime.parse(json["time"]),
         sunrise: DateTime.parse(json["sunrise"]),
-        sunset: DateTime.parse(json["sunset"]));
+        sunset: DateTime.parse(json["sunset"]),
+        eveTemp: json["eveTemp"],
+        mornTemp: json["mornTemp"],
+        humidity: json["humidity"],
+        pressure: json["pressure"],
+        pop: json["pop"],
+        clouds: json["clouds"],
+        dewPoint: json["dewPoint"],
+        uvi: json["uvi"]
+        );
   }
 }

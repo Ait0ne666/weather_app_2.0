@@ -34,48 +34,51 @@ class GridWeatherItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  dayOfWeek,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Container(
-                    child: Center(
-                  child: Image.asset(
-                    mapWeatherConditionsToAsset(weather.conditions, weather.time,
-                        weather.sunrise, weather.sunset),
-                    width: 22,
-                    height: 22,
+    return Flexible(
+      child: Container(
+        child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    dayOfWeek,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16),
                   ),
-                )),
-                SizedBox(
-                  height: 5,
-                ),
-                Container(
-                  margin: EdgeInsets.only(left: 4),
-                  child: FittedBox(
-                    child: Text(
-                      weather.dayTemp.round().toString() +
-                          '°/' +
-                          weather.nightTemp.round().toString() +
-                          '°',
-                      style: TextStyle(color: Colors.white, fontSize: 20),
-                      textAlign: TextAlign.center,
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Container(
+                      child: Center(
+                    child: Image.asset(
+                      mapWeatherConditionsToAsset(weather.conditions, weather.time,
+                          weather.sunrise, weather.sunset),
+                      width: 22,
+                      height: 22,
+                    ),
+                  )),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(left: 4),
+                    child: FittedBox(
+                      fit:  BoxFit.contain,
+                      child: Text(
+                        weather.dayTemp.round().toString() +
+                            '°/' +
+                            weather.nightTemp.round().toString() +
+                            '°',
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
+      ),
     );
   }
 }

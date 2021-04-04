@@ -19,9 +19,17 @@ class CityModel extends Equatable {
 
     json["daily"].forEach((value) => {
           tempWeatherArray.add(Weather(
-            windSpeed: value["wind_speed"],
-            dayTemp: value["temp"]["day"],
-            nightTemp: value["temp"]["night"],
+            windSpeed: value["wind_speed"].toDouble(),
+            dayTemp: value["temp"]["day"].toDouble(),
+            nightTemp: value["temp"]["night"].toDouble(),
+            eveTemp: value["temp"]["eve"].toDouble(),
+            mornTemp: value["temp"]["morn"].toDouble(),
+            humidity: value["humidity"].toInt(),
+            pressure: value["pressure"].toDouble() / 1.33,
+            pop: value["pop"].toInt(),
+            uvi: value["uvi"].toDouble(),
+            clouds: value["clouds"].toInt(),
+            dewPoint: value["dew_point"].toDouble(),
             conditions: mapWeatherConditionsToApiResponse(
                 value["weather"][0]["main"], value["weather"][0]["id"]),
             time: DateTime.fromMillisecondsSinceEpoch(value["dt"] * 1000),

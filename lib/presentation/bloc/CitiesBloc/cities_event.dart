@@ -33,3 +33,16 @@ class ChangeCity extends CitiesEvent {
   @override
   List<Object> get props => [city];
 }
+
+
+class AddCity extends CitiesEvent {
+  final LocationPoint location;
+
+  AddCity(this.location);
+
+  @override
+  List<Object> get props => [location];
+
+}
+
+

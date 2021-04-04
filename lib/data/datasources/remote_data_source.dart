@@ -1,10 +1,12 @@
 import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
+import 'package:dartz/dartz_unsafe.dart';
 import 'package:weather_app2/config.dart';
 import 'package:weather_app2/core/Failures/Failure.dart';
 import 'package:weather_app2/core/Location.dart';
 import 'package:weather_app2/data/models/city.dart';
+import 'package:weather_app2/domain/entities/AutocompleteCity/autocomplete_city.dart';
 import 'package:weather_app2/domain/entities/City/city.dart';
 import "package:http/http.dart" as http;
 
@@ -19,11 +21,10 @@ class RemoteDataSource {
               coordinates.latitude, coordinates.longitude));
 
       if (locationResponse.statusCode == 200) {
-        print(locationResponse.body);
         final currentCity =
             CityModel().cityNameFromJson(jsonDecode(locationResponse.body));
 
-        print(currentCity);
+ 
 
         final weatherResponse = await http.get(
             options.weatherByLocationRequestUrl(
@@ -32,8 +33,7 @@ class RemoteDataSource {
         if (weatherResponse.statusCode == 200) {
           CityModel city =
               CityModel().fromJson(jsonDecode(weatherResponse.body));
-          print(333);
-          print(city.currentWeather.sunrise);
+
           return Future(() => Right(City(
                 coordinates: city.coordinates,
                 currentWeather: city.currentWeather,
@@ -54,5 +54,48 @@ class RemoteDataSource {
     }
   }
 
-  Future<List<City>> getCitySuggestions(String query) {}
+  Future<Suggestions> getCitySuggestions(String query) async {
+
+    try {
+      final suggestionsResponse = await http.get(options.autocompleteRequest(query));
+
+
+      if (suggestionsResponse.statusCode == 200) {
+        CityModel city;
+        
+        Suggestions newSuggestions =  Suggestions.fromJson(jsonDecode(suggestionsResponse.body));
+        
+
+        var mainSuggestion = newSuggestions.suggestions[0];
+
+
+        final weatherResponse = await http.get(
+            options.weatherByLocationRequestUrl(
+                mainSuggestion.location.latitude, mainSuggestion.location.longitude));
+      
+
+        if (weatherResponse.statusCode == 200) {
+          city =
+              CityModel().fromJson(jsonDecode(weatherResponse.body));
+        }
+
+
+        
+
+        return Suggestions(suggestions: newSuggestions.suggestions.sublist(1), mainSuggestion: City(
+          coordinates: city.coordinates, 
+          currentWeather: city.currentWeather, 
+          dailyWeather: city.dailyWeather,
+          name: mainSuggestion.name
+        ));
+      } else {
+        return Future(() => Suggestions(mainSuggestion: null, suggestions: []));  
+      }
+
+    } catch (error) {
+      print('error');
+      return Future(() => Suggestions(mainSuggestion: null, suggestions: []));
+    }
+
+  }
 }
