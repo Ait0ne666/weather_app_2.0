@@ -82,7 +82,7 @@ class _WeatherChartState extends State<WeatherChart> {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 15),
-      margin: EdgeInsets.only(bottom: 50),
+      margin: EdgeInsets.only(bottom: 20),
       child: Center(
         child: ClipRect(
           child: BackdropFilter(
@@ -91,7 +91,8 @@ class _WeatherChartState extends State<WeatherChart> {
               sigmaY: 40,
             ),
             child: Container(
-              height: 180,
+              // height: 180,
+
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(20)),
                 gradient: RadialGradient(colors: [
@@ -102,29 +103,50 @@ class _WeatherChartState extends State<WeatherChart> {
                   0.8
                 ]),
               ),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-                  height: 180,
-                  width: 2500,
-                  child: FutureBuilder(
-                      future: loadImages(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.done) {
-                          return ChartData(
-                            hourlyForecast: widget.hourlyForecast,
-                            images: snapshot.data,
-                            max: getMinMax.max,
-                            min: getMinMax.min,
-                            sunrise: widget.sunrise,
-                            sunset: widget.sunset,
-                          );
-                        } else {
-                          return CircularProgressIndicator();
-                        }
-                      }),
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: EdgeInsets.only(top: 15, left: 25),
+                    child: Text(
+                      'Hourly forecast',
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Divider(height: 1, color: Colors.white.withOpacity(0.3)),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+                      height: 180,
+                      width: 2500,
+                      child: FutureBuilder(
+                          future: loadImages(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.done) {
+                              return ChartData(
+                                hourlyForecast: widget.hourlyForecast,
+                                images: snapshot.data,
+                                max: getMinMax.max,
+                                min: getMinMax.min,
+                                sunrise: widget.sunrise,
+                                sunset: widget.sunset,
+                              );
+                            } else {
+                              return CircularProgressIndicator();
+                            }
+                          }),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

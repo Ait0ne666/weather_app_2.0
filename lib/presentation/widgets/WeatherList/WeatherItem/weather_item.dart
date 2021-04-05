@@ -5,14 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:weather_app2/domain/entities/Weather/weather.dart';
+import 'package:weather_app2/presentation/animations/HeroTransition.dart';
 import 'package:weather_app2/presentation/navigation/NavigationRouter.dart';
 import 'package:weather_app2/presentation/utils/mapWeatherConditionsToAsset.dart';
 
 class WeatherItem extends StatelessWidget {
   final DateTime date;
   final Weather weather;
+  final GlobalKey refKey;
 
-  WeatherItem({this.date, this.weather});
+  WeatherItem({this.date, this.weather, this.refKey});
 
   String get dayOfWeek {
     switch (date.weekday) {
@@ -91,11 +93,30 @@ class WeatherItem extends StatelessWidget {
     return format.format(date);
   }
 
-
   void showDetail(BuildContext context) {
-    NavigationRouter.router.navigateTo(context, '/dayWeather', transition: TransitionType.cupertino, routeSettings: RouteSettings(arguments: weather));
-  }
+    RenderBox renderBox = refKey.currentContext.findRenderObject();
 
+    RenderBox offsetBox = context.findRenderObject();
+
+    if (renderBox != null && renderBox.size != null && offsetBox != null) {
+      Offset offset = offsetBox.localToGlobal(Offset.zero);
+      Size size = renderBox.size;
+      Size screenSize = MediaQuery.of(context).size;
+
+      NavigationRouter.router.navigateTo(context, '/dayWeather',
+          transition: TransitionType.custom,
+          transitionDuration: Duration(milliseconds: 400),
+          transitionBuilder: (context, animation, secondaryAnimation, child) {
+        return HeroTransition(
+          controller: animation,
+          child: child,
+          initialOffset: offset,
+          initialSize: size,
+          screenSize: screenSize,
+        );
+      }, routeSettings: RouteSettings(arguments: weather));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +132,7 @@ class WeatherItem extends StatelessWidget {
           child: InkWell(
             onTap: () => showDetail(context),
             child: Container(
-              
+              key: refKey,
               width: getItemWidth(context),
               padding: EdgeInsets.all(10),
               decoration: BoxDecoration(

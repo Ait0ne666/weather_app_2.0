@@ -25,7 +25,7 @@ class CityModel extends Equatable {
             eveTemp: value["temp"]["eve"].toDouble(),
             mornTemp: value["temp"]["morn"].toDouble(),
             humidity: value["humidity"].toInt(),
-            pressure: value["pressure"].toDouble() / 1.33,
+            pressure: (value["pressure"].toDouble() / 1.33).round(),
             pop: value["pop"].toInt(),
             uvi: value["uvi"].toDouble(),
             clouds: value["clouds"].toInt(),

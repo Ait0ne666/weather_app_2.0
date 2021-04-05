@@ -70,13 +70,12 @@ class Weather extends Equatable {
   final DateTime time;
   final DateTime sunset;
   final DateTime sunrise;
-  final double pressure;
+  final int pressure;
   final int humidity;
   final int pop;
   final double dewPoint;
   final int clouds;
   final double uvi;
-
 
   Weather(
       {this.temperature,
@@ -94,8 +93,7 @@ class Weather extends Equatable {
       this.pressure,
       this.clouds,
       this.dewPoint,
-      this.uvi
-      });
+      this.uvi});
 
   List<Object> get props => [temperature, conditions, windSpeed];
 
@@ -117,7 +115,6 @@ class Weather extends Equatable {
       "uvi": uvi,
       "dewPoint": dewPoint,
       "clouds": clouds
-
     };
   }
 
@@ -138,7 +135,6 @@ class Weather extends Equatable {
         pop: json["pop"],
         clouds: json["clouds"],
         dewPoint: json["dewPoint"],
-        uvi: json["uvi"]
-        );
+        uvi: json["uvi"]);
   }
 }

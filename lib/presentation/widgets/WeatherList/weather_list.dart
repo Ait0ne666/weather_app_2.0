@@ -20,7 +20,9 @@ class _WeatherListState extends State<WeatherList> {
 
     weatherData.asMap().forEach((index, Weather weather) {
       result.add(WeatherItem(
-          weather: weather, date: weather.sunrise.add(Duration(hours: 4))));
+          refKey: new GlobalKey(),
+          weather: weather,
+          date: weather.sunrise.add(Duration(hours: 4))));
       if (index < weatherData.length - 1) {
         result.add(SizedBox(width: 8));
       }
@@ -40,23 +42,32 @@ class _WeatherListState extends State<WeatherList> {
       children: [
         Container(
           height: 120,
-          child: PageView(
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 5),
-                child: Row(
-                  children: getWeatherList(widget.weatherData.sublist(0, 4)),
-                ),
+          child: ScrollConfiguration(
+            behavior: ScrollBehavior(),
+            child: GlowingOverscrollIndicator(
+              color: Colors.transparent,
+              axisDirection: AxisDirection.down,
+              child: PageView(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 5),
+                    child: Row(
+                      children:
+                          getWeatherList(widget.weatherData.sublist(0, 4)),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 5),
+                    child: Row(
+                      children:
+                          getWeatherList(widget.weatherData.sublist(4, 7)),
+                    ),
+                  ),
+                ],
+                onPageChanged: onPageChange,
+                scrollDirection: Axis.horizontal,
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 5),
-                child: Row(
-                  children: getWeatherList(widget.weatherData.sublist(4, 7)),
-                ),
-              ),
-            ],
-            onPageChanged: onPageChange,
-            scrollDirection: Axis.horizontal,
+            ),
           ),
         ),
         Pagination(

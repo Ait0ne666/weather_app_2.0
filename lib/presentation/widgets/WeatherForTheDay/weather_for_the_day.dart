@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:weather_app2/domain/entities/City/city.dart';
 import 'package:weather_app2/presentation/bloc/CitiesBloc/cities_bloc.dart';
 import 'package:weather_app2/presentation/bloc/CitiesBloc/cities_event.dart';
+import 'package:weather_app2/presentation/widgets/DayWeatherDetail/SunriseSunset/sunrise_sunset.dart';
 import 'package:weather_app2/presentation/widgets/WeatherForTheDay/MainWeather/main-weather.dart';
 import 'package:weather_app2/presentation/widgets/WeatherForTheDay/Sunrise/sunrise.dart';
 import 'package:weather_app2/presentation/widgets/WeatherForTheDay/WeatherChart/weather_chart.dart';
@@ -89,7 +90,8 @@ class _WeatherForTheDayState extends State<WeatherForTheDay> {
                   widget.city.currentWeather.hourlyForecast,
                   widget.city.currentWeather.sunrise,
                   widget.city.currentWeather.sunset,
-                )
+                ),
+                SunriseSunset(widget.city.currentWeather),
               ],
             ),
           ),

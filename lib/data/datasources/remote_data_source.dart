@@ -93,7 +93,7 @@ class RemoteDataSource {
       }
 
     } catch (error) {
-      print('error');
+      print(error);
       return Future(() => Suggestions(mainSuggestion: null, suggestions: []));
     }
 

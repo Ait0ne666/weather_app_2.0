@@ -81,7 +81,7 @@ class _MyAppState extends State<MyApp> {
                   );
 
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                } else if (state is ChangeCity){
+                } else if (state is ChangeCity) {
                   NavigationRouter.router.navigateTo(context, '/main',
                       transition: TransitionType.fadeIn, clearStack: true);
                 }

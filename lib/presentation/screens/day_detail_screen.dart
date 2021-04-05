@@ -9,18 +9,14 @@ import 'package:weather_app2/presentation/screens/ScreenWrapper/screen-wrapper.d
 import 'package:weather_app2/presentation/widgets/DayWeatherDetail/day_weather_detail.dart';
 import 'package:weather_app2/presentation/widgets/common/FailureScreen/failure_screen.dart';
 
-
 class DayDetail extends StatelessWidget {
   final Weather dayWeather;
-
 
   DayDetail(this.dayWeather);
 
   void navigateBack(BuildContext context) {
-    NavigationRouter.router.navigateTo(context, '/main', transition: TransitionType.cupertino);
+    NavigationRouter.router.pop(context);
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +26,9 @@ class DayDetail extends StatelessWidget {
           child:
               BlocBuilder<CitiesBloc, CitiesState>(builder: (context, state) {
             if (state is CitiesLoaded || state is CitiesUpdating) {
-              return DayWeatherDetail(dayWeather: dayWeather,);
+              return DayWeatherDetail(
+                dayWeather: dayWeather,
+              );
             } else {
               return FailureScreen();
             }
@@ -44,7 +42,7 @@ class DayDetail extends StatelessWidget {
               child: Row(children: [
                 IconButton(
                   icon: Icon(
-                    Icons.arrow_back,
+                    Icons.close,
                     color: Colors.white,
                   ),
                   iconSize: 35,

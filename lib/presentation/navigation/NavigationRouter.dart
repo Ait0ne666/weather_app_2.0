@@ -21,8 +21,8 @@ class NavigationRouter {
   static Handler _searchHandler =
       Handler(handlerFunc: (context, parameters) => CitySearchScreen());
 
-
-  static Handler _dayWeatherHandler = Handler(handlerFunc: (context, parameters) {
+  static Handler _dayWeatherHandler =
+      Handler(handlerFunc: (context, parameters) {
     final args = context.settings.arguments as Weather;
     return DayDetail(args);
   });

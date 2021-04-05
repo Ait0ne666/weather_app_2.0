@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "../../../../lilekov-studio-front"
+		},
+		{
+			"path": "../../.."
+		},
+		{
+			"path": "../../../../bashdikt-landing"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "bashdikt-landing"
+	}
+}
