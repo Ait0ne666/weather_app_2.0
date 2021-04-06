@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
 import 'package:flutter/painting.dart' as painting;
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:weather_app2/domain/entities/Weather/weather.dart';
@@ -14,6 +15,12 @@ const assets = [
   'assets/128/night_half_moon_clear.png'
 ];
 
+
+
+
+
+
+
 class AnimatedDay extends StatelessWidget {
   final WeatherWithHourlyForecast weather;
 
@@ -22,14 +29,7 @@ class AnimatedDay extends StatelessWidget {
   Future<ui.Image> loadImage(String asset) async {
     final ByteData data = await rootBundle.load(asset);
 
-    // var immutableBuffer =
-    //     await ui.ImmutableBuffer.fromUint8List(data.buffer.asUint8List());
-    // var descriptor = ui.ImageDescriptor.raw(immutableBuffer,
-    //     width: 40, height: 40, pixelFormat: ui.PixelFormat.bgra8888);
-    // final ui.Codec codec = await descriptor.instantiateCodec(
-    //   targetHeight: 20,
-    //   targetWidth: 20,
-    // );
+
     final ui.Codec codec = await ui.instantiateImageCodec(
         data.buffer.asUint8List(),
         targetHeight: 20,
@@ -47,9 +47,13 @@ class AnimatedDay extends StatelessWidget {
       ui.Image image = await loadImage(assets[i]);
       images[assets[i]] = image;
     }
+    
 
     return images;
   }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +71,7 @@ class AnimatedDay extends StatelessWidget {
               sunrise: weather.sunrise,
               sunset: weather.sunset,
               dayPercentage: dayPercentage,
+              // svgSun: snapshot.data
             );
           } else {
             return SizedBox();
@@ -83,13 +88,16 @@ class AnimatedHorizon extends StatefulWidget {
   final ui.Image image;
   final ui.Image imageMoon;
   final double dayPercentage;
+  final DrawableRoot svgSun;
 
   AnimatedHorizon(
       {this.sunrise,
       this.sunset,
       this.image,
       this.dayPercentage,
-      this.imageMoon});
+      this.imageMoon,
+      this.svgSun
+      });
 
   @override
   _AnimatedHorizonState createState() => _AnimatedHorizonState();
@@ -139,6 +147,7 @@ class _AnimatedHorizonState extends State<AnimatedHorizon>
                 sunrise: rise,
                 sunset: fall,
                 moon: widget.imageMoon,
+                // svgSun: widget.svgSun,
                 dayPercentage: _animation.value),
             child: Container(height: 150),
           );
@@ -154,9 +163,10 @@ class HorizonPainter extends CustomPainter {
   final double dayPercentage;
   final String sunrise;
   final String sunset;
+  final DrawableRoot svgSun;
 
   HorizonPainter(
-      {this.sun, this.sunrise, this.sunset, this.dayPercentage, this.moon});
+      {this.sun, this.sunrise, this.sunset, this.dayPercentage, this.moon, this.svgSun});
 
   Offset getImagePositionFromDay(
       double dayPercentage, Size size, ui.Image sun) {
@@ -189,16 +199,19 @@ class HorizonPainter extends CustomPainter {
     Path dayGonePath = Path();
 
     Offset sunOffset;
-    if (dayPercentage < 1) {
+    if (dayPercentage <= 0) {
+      sunOffset = Offset(size.width * 0.1 - 10,
+          size.height * 0.9 - 10);
+    } else if (dayPercentage < 1) {
       sunOffset = getImagePositionFromDay(dayPercentage, size, sun);
     } else {
-      sunOffset = Offset(size.width * 0.9 - moon.width / 2,
-          size.height * 0.9 - moon.height / 2);
+      sunOffset = Offset(size.width * 0.9 - 10,
+          size.height * 0.9 - 10);
     }
 
     dayGonePath.moveTo(size.width * 0.1, size.height * 0.9);
     dayGonePath.arcToPoint(
-        Offset(sunOffset.dx + sun.width / 2, sunOffset.dy + sun.height / 2),
+        Offset(sunOffset.dx + 10, sunOffset.dy + 10),
         radius: Radius.circular(size.width * 0.8 / 2));
 
     double dayGone = size.width * 0.1 +
@@ -213,6 +226,7 @@ class HorizonPainter extends CustomPainter {
     } else {
       canvas.drawImage(moon, sunOffset, imagePaint);
     }
+    
 
     TextPainter textPainter = TextPainter();
 

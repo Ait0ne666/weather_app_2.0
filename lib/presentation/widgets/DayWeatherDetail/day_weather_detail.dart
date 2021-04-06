@@ -36,7 +36,7 @@ class _DayWeatherDetailState extends State<DayWeatherDetail>
   }
 
   void handleReorder(int prevIndex, int newIndex) {
-    var newCards = widget.widgets;
+    var newCards = [...widget.widgets];
     if (prevIndex > newIndex) {
       final String item = newCards.removeAt(prevIndex);
       newCards.insert(newIndex, item);

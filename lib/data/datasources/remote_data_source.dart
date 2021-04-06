@@ -65,7 +65,6 @@ class RemoteDataSource {
         }
       } else {
         CityModel city = localDataSource.getCityModel(coordinates);
-        print(city);
         if (city != null) {
           return Future(() => Right(City(
                 coordinates: city.coordinates,

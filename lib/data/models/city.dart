@@ -99,7 +99,7 @@ class CityModel extends Equatable {
 
     jsonList.forEach((element) {
       var date = DateTime.fromMillisecondsSinceEpoch(element["dt"] * 1000);
-      print(element["weather"][0]["main"]);
+  
       tempHourlyForecast.add(
         Weather(
           time: date,

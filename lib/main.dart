@@ -5,6 +5,7 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:weather_app2/core/Location.dart';
+import 'package:weather_app2/core/NetworkInfo.dart';
 import 'package:weather_app2/data/datasources/remote_data_source.dart';
 import 'package:weather_app2/data/models/city.dart';
 import 'package:weather_app2/data/repositories/cities_repository_implementation.dart';
@@ -31,7 +32,7 @@ void main() async {
   Hive.registerAdapter(LocationPointAdapter());
   await Hive.initFlutter();
   await Hive.openBox('cities');
-  Hive.box('cities').clear();
+  // Hive.box('cities').clear();
   runApp(MyApp());
 }
 
@@ -48,9 +49,12 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     citiesBloc = CitiesBloc(
-        getCity: GetCity(
-            repository: CityRepositoryImpl(RemoteDataSource()),
-            locationService: LocationService()));
+      getCity: GetCity(
+        repository: CityRepositoryImpl(RemoteDataSource()),
+        locationService: LocationService(),
+      ),
+      networkInfo: NetworkInfo()
+    );
     citiesBloc.add(AppStarted());
     settingsBloc = SettingsBloc();
     super.initState();

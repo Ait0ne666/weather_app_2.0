@@ -1,4 +1,5 @@
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:weather_app2/core/NetworkInfo.dart';
 import 'package:weather_app2/domain/entities/City/city.dart';
 import 'package:weather_app2/domain/usecases/get_city_usecase.dart';
 import 'package:weather_app2/presentation/bloc/CitiesBloc/cities_event.dart';
@@ -8,8 +9,9 @@ class CitiesBloc extends HydratedBloc<CitiesEvent, CitiesState> {
   final GetCity getCity;
   Map<String, City> _cities = {};
   String _currentCity;
+  final NetworkInfo networkInfo;
 
-  CitiesBloc({this.getCity}) : super(CitiesUninitialized());
+  CitiesBloc({this.getCity, this.networkInfo}) : super(CitiesUninitialized());
 
   @override
   Stream<CitiesState> mapEventToState(CitiesEvent event) async* {
