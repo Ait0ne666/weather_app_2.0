@@ -32,6 +32,12 @@ class _MainWeatherState extends State<MainWeather>
     _controller.play();
   }
 
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   String get currentDate {
     DateTime date = DateTime.now();
     DateFormat formatter = DateFormat('HH:mm');

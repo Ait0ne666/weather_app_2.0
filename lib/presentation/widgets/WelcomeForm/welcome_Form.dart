@@ -11,51 +11,72 @@ class WelcomeForm extends StatelessWidget {
 
   WelcomeForm(this.gradientColors);
 
-
-
   void handleLocation(BuildContext context) {
     BlocProvider.of<CitiesBloc>(context).add(GetCityByLocation());
   }
 
   void handlePickCity(BuildContext context) {
-    NavigationRouter.router.navigateTo(context, '/citySearch', transition: TransitionType.cupertino);
+    NavigationRouter.router.navigateTo(context, '/citySearch',
+        transition: TransitionType.cupertino);
   }
-
-
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 100, horizontal: 25),
-      child: Column(
-        // mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Expanded(
-              child: Center(
-                child: Container(
-            child: SvgPicture.asset('assets/SVG/day_partial_cloud.svg', width: 200, height: 200),
-          ),
-              )),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(80)),
-              primary: Color(0xff631961),
-              padding: EdgeInsets.all(0),
-
-            ),
-            child: Ink(
-              decoration: BoxDecoration( borderRadius: BorderRadius.circular(80)),
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: Stack(
+          children: [
+            Center(
               child: Container(
-                alignment: Alignment.center,
-                width: double.infinity,
-                height: 60,
-                child: Text('Find my location', style: TextStyle(fontSize: 22),),
+                child: SvgPicture.asset('assets/SVG/day_partial_cloud.svg',
+                    width: 200, height: 200),
               ),
             ),
-            onPressed: () => handleLocation(context),
-          ),
-          TextButton(child: Text('Or pick a city manually', style: TextStyle(color: Colors.white, fontSize: 16),), onPressed: () => handlePickCity(context),)
-        ],
+            Positioned(
+              bottom: 0,
+              child: Container(
+                height: 110,
+                width: MediaQuery.of(context).size.width - 50,
+                child: Column(
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(80)),
+                        primary: Color(0xff631961),
+                        padding: EdgeInsets.all(0),
+                      ),
+                      child: Ink(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(80)),
+                        child: Container(
+                          alignment: Alignment.center,
+                          width: double.infinity,
+                          height: 60,
+                          child: Text(
+                            'Find my location',
+                            style: TextStyle(fontSize: 22),
+                          ),
+                        ),
+                      ),
+                      onPressed: () => handleLocation(context),
+                    ),
+                    TextButton(
+                      child: Text(
+                        'Or pick a city manually',
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      ),
+                      onPressed: () => handlePickCity(context),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

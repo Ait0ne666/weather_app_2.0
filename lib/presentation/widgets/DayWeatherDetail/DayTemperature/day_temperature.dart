@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class DayTemperature extends StatelessWidget {
   final double dayTemp;
@@ -41,23 +42,13 @@ class DayTemperature extends StatelessWidget {
                 Expanded(
                   child: Column(
                     children: [
-                      Text(
-                        'Morning',
-                        style: TextStyle(color: Colors.white.withOpacity(0.8)),
-                      ),
-                      SizedBox(
-                        height: 7,
-                      ),
-                      Text(mornTemp.toString() + '°',
-                          style: TextStyle(
-                            color: Colors.white,
-                          ))
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    children: [
+                      Center(
+                          child: SvgPicture.asset(
+                        'assets/wi-day-sunny.svg',
+                        color: Colors.white,
+                        width: 30,
+                        height: 30,
+                      )),
                       Text(
                         'Day',
                         style: TextStyle(
@@ -75,6 +66,30 @@ class DayTemperature extends StatelessWidget {
                     ],
                   ),
                 ),
+                Expanded(
+                  child: Column(
+                    children: [
+                      Center(
+                          child: SvgPicture.asset(
+                        'assets/wi-sunrise.svg',
+                        color: Colors.white,
+                        width: 30,
+                        height: 30,
+                      )),
+                      Text(
+                        'Morning',
+                        style: TextStyle(color: Colors.white.withOpacity(0.8)),
+                      ),
+                      SizedBox(
+                        height: 7,
+                      ),
+                      Text(mornTemp.toString() + '°',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ))
+                    ],
+                  ),
+                ),
               ],
             ),
             SizedBox(height: 10),
@@ -83,14 +98,21 @@ class DayTemperature extends StatelessWidget {
                 Expanded(
                   child: Column(
                     children: [
+                      Center(
+                          child: SvgPicture.asset(
+                        'assets/wi-night-clear.svg',
+                        color: Colors.white,
+                        width: 30,
+                        height: 30,
+                      )),
                       Text(
-                        'Evening',
+                        'Night',
                         style: TextStyle(color: Colors.white.withOpacity(0.8)),
                       ),
                       SizedBox(
                         height: 7,
                       ),
-                      Text(eveTemp.toString() + '°',
+                      Text(nightTemp.toString() + '°',
                           style: TextStyle(
                             color: Colors.white,
                           ))
@@ -100,14 +122,21 @@ class DayTemperature extends StatelessWidget {
                 Expanded(
                   child: Column(
                     children: [
+                      Center(
+                          child: SvgPicture.asset(
+                        'assets/wi-sunset.svg',
+                        color: Colors.white,
+                        width: 30,
+                        height: 30,
+                      )),
                       Text(
-                        'Night',
+                        'Evening',
                         style: TextStyle(color: Colors.white.withOpacity(0.8)),
                       ),
                       SizedBox(
                         height: 7,
                       ),
-                      Text(nightTemp.toString() + '°',
+                      Text(eveTemp.toString() + '°',
                           style: TextStyle(
                             color: Colors.white,
                           ))

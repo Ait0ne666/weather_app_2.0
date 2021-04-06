@@ -1,25 +1,74 @@
 import 'package:equatable/equatable.dart';
+import 'package:hive/hive.dart';
 
+part 'weather.g.dart';
+
+@HiveType(typeId: 2)
 enum WeatherConditions {
+  @HiveField(0)
   CLOUDS,
+  @HiveField(1)
   RAIN,
+  @HiveField(2)
   SUNNY,
+  @HiveField(3)
   CLEAR,
+  @HiveField(4)
   SNOW,
+  @HiveField(5)
   THUNDER,
+  @HiveField(6)
   PARTIAL_CLOUDS,
+  @HiveField(7)
   OVERCAST,
+  @HiveField(8)
   MIST
 }
 
-class WeatherWithHourlyForecast extends Weather {
+@HiveType(typeId: 4)
+class WeatherWithHourlyForecast {
+  @HiveField(0)
   final List<Weather> hourlyForecast;
+  @HiveField(1)
   final double temperature;
+  @HiveField(2)
   final WeatherConditions conditions;
+  @HiveField(3)
   final double windSpeed;
+  @HiveField(4)
   final DateTime sunrise;
+  @HiveField(5)
   final DateTime sunset;
+  @HiveField(6)
   final DateTime time;
+  @HiveField(23)
+  final double dayTemp;
+  @HiveField(24)
+  final double nightTemp;
+  @HiveField(25)
+  final double eveTemp;
+  @HiveField(26)
+  final double mornTemp;
+  @HiveField(10)
+  final int pressure;
+  @HiveField(11)
+  final int humidity;
+  @HiveField(12)
+  final int pop;
+  @HiveField(13)
+  final double dewPoint;
+  @HiveField(14)
+  final int clouds;
+  @HiveField(15)
+  final double uvi;
+  @HiveField(16)
+  final String moonrise;
+  @HiveField(17)
+  final String moonset;
+  @HiveField(18)
+  final String moonPhase;
+  @HiveField(19)
+  final String moonIllumination;
 
   WeatherWithHourlyForecast(
       {this.temperature,
@@ -28,7 +77,21 @@ class WeatherWithHourlyForecast extends Weather {
       this.hourlyForecast,
       this.sunset,
       this.sunrise,
-      this.time});
+      this.time,
+      this.clouds,
+      this.dayTemp,
+      this.dewPoint,
+      this.eveTemp,
+      this.humidity,
+      this.moonIllumination,
+      this.moonPhase,
+      this.moonrise,
+      this.moonset,
+      this.mornTemp,
+      this.nightTemp,
+      this.pop,
+      this.pressure,
+      this.uvi});
 
   Map<String, dynamic> toJson() {
     return {
@@ -59,23 +122,48 @@ class WeatherWithHourlyForecast extends Weather {
   }
 }
 
+@HiveType(typeId: 1)
 class Weather extends Equatable {
+  @HiveField(20)
   final double temperature;
+  @HiveField(21)
   final WeatherConditions conditions;
+  @HiveField(22)
   final double windSpeed;
+  @HiveField(23)
   final double dayTemp;
+  @HiveField(24)
   final double nightTemp;
+  @HiveField(25)
   final double eveTemp;
+  @HiveField(26)
   final double mornTemp;
+  @HiveField(7)
   final DateTime time;
+  @HiveField(8)
   final DateTime sunset;
+  @HiveField(9)
   final DateTime sunrise;
+  @HiveField(10)
   final int pressure;
+  @HiveField(11)
   final int humidity;
+  @HiveField(12)
   final int pop;
+  @HiveField(13)
   final double dewPoint;
+  @HiveField(14)
   final int clouds;
+  @HiveField(15)
   final double uvi;
+  @HiveField(16)
+  final String moonrise;
+  @HiveField(17)
+  final String moonset;
+  @HiveField(18)
+  final String moonPhase;
+  @HiveField(19)
+  final String moonIllumination;
 
   Weather(
       {this.temperature,
@@ -93,7 +181,11 @@ class Weather extends Equatable {
       this.pressure,
       this.clouds,
       this.dewPoint,
-      this.uvi});
+      this.uvi,
+      this.moonIllumination,
+      this.moonPhase,
+      this.moonrise,
+      this.moonset});
 
   List<Object> get props => [temperature, conditions, windSpeed];
 
@@ -114,7 +206,11 @@ class Weather extends Equatable {
       "pop": pop,
       "uvi": uvi,
       "dewPoint": dewPoint,
-      "clouds": clouds
+      "clouds": clouds,
+      "moonset": moonset.toString(),
+      "moonrise": moonrise.toString(),
+      "illumination": moonIllumination,
+      "moonPhase": moonPhase
     };
   }
 
@@ -135,6 +231,10 @@ class Weather extends Equatable {
         pop: json["pop"],
         clouds: json["clouds"],
         dewPoint: json["dewPoint"],
-        uvi: json["uvi"]);
+        uvi: json["uvi"],
+        moonIllumination: json['illumination'],
+        moonrise: json["moonrise"],
+        moonset: json["moonset"],
+        moonPhase: json['moonPhase']);
   }
 }

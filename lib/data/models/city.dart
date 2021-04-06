@@ -1,12 +1,23 @@
 import 'package:equatable/equatable.dart';
+import 'package:hive/hive.dart';
 import 'package:weather_app2/core/Location.dart';
 import 'package:weather_app2/domain/entities/Weather/weather.dart';
+
+part 'city.g.dart';
 // import 'package:weather_app2/domain/entities/Weather/weather.dart';
 
+@HiveType(typeId: 0)
 class CityModel extends Equatable {
+  @HiveField(0)
   final String name;
+
+  @HiveField(1)
   final LocationPoint coordinates;
+
+  @HiveField(2)
   final WeatherWithHourlyForecast currentWeather;
+
+  @HiveField(3)
   final List<Weather> dailyWeather;
 
   CityModel(
@@ -14,32 +25,48 @@ class CityModel extends Equatable {
 
   List<Object> get props => [name, coordinates];
 
-  CityModel fromJson(Map<String, dynamic> json) {
+  CityModel fromJson(
+      Map<String, dynamic> json, Map<String, dynamic> jsonAstro) {
+    List<dynamic> astro;
+    if (jsonAstro != null) {
+      astro = jsonAstro['data']['weather'];
+    }
+
     List<Weather> tempWeatherArray = [];
 
-    json["daily"].forEach((value) => {
-          tempWeatherArray.add(Weather(
-            windSpeed: value["wind_speed"].toDouble(),
-            dayTemp: value["temp"]["day"].toDouble(),
-            nightTemp: value["temp"]["night"].toDouble(),
-            eveTemp: value["temp"]["eve"].toDouble(),
-            mornTemp: value["temp"]["morn"].toDouble(),
-            humidity: value["humidity"].toInt(),
-            pressure: (value["pressure"].toDouble() / 1.33).round(),
-            pop: value["pop"].toInt(),
-            uvi: value["uvi"].toDouble(),
-            clouds: value["clouds"].toInt(),
-            dewPoint: value["dew_point"].toDouble(),
-            conditions: mapWeatherConditionsToApiResponse(
-                value["weather"][0]["main"], value["weather"][0]["id"]),
-            time: DateTime.fromMillisecondsSinceEpoch(value["dt"] * 1000),
-            sunrise:
-                DateTime.fromMillisecondsSinceEpoch(value["sunrise"] * 1000),
-            sunset: DateTime.fromMillisecondsSinceEpoch(value["sunset"] * 1000),
-          ))
-        });
-    print(
-        DateTime.fromMillisecondsSinceEpoch(json["current"]["sunrise"] * 1000));
+    json["daily"].asMap().forEach((index, value) {
+      tempWeatherArray.add(Weather(
+        windSpeed: value["wind_speed"].toDouble(),
+        dayTemp: value["temp"]["day"].toDouble(),
+        nightTemp: value["temp"]["night"].toDouble(),
+        eveTemp: value["temp"]["eve"].toDouble(),
+        mornTemp: value["temp"]["morn"].toDouble(),
+        humidity: value["humidity"].toInt(),
+        pressure: (value["pressure"].toDouble() / 1.33).round(),
+        pop: value["pop"].toInt(),
+        uvi: value["uvi"].toDouble(),
+        clouds: value["clouds"].toInt(),
+        dewPoint: value["dew_point"].toDouble(),
+        conditions: mapWeatherConditionsToApiResponse(
+            value["weather"][0]["main"], value["weather"][0]["id"]),
+        time: DateTime.fromMillisecondsSinceEpoch(value["dt"] * 1000),
+        sunrise: DateTime.fromMillisecondsSinceEpoch(value["sunrise"] * 1000),
+        sunset: DateTime.fromMillisecondsSinceEpoch(value["sunset"] * 1000),
+        moonIllumination: astro != null && index < astro.length - 1
+            ? astro[index]['astronomy'][0]['moon_illumination']
+            : null,
+        moonPhase: astro != null && index < astro.length - 1
+            ? astro[index]['astronomy'][0]['moon_phase']
+            : null,
+        moonrise: astro != null && index < astro.length - 1
+            ? astro[index]['astronomy'][0]['moonrise']
+            : null,
+        moonset: astro != null && index < astro.length - 1
+            ? astro[index]['astronomy'][0]['moonset']
+            : null,
+      ));
+    });
+
     return CityModel(
         coordinates:
             LocationPoint(latitude: json["lat"], longitude: json["lon"]),

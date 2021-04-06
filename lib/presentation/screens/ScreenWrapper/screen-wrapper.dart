@@ -24,3 +24,15 @@ class ScreenWrapper extends StatelessWidget {
     );
   }
 }
+
+// Color(0xff631961),
+// Color(0xffE94057),
+// Color(0xffF27121)
+
+// Color(0xff182848),
+// Color(0xff182848),
+// Color(0xff3d5896)
+
+// Color(0xffffe598),
+// Color(0xff6190E8),
+// Color(0xffA7BFE8),

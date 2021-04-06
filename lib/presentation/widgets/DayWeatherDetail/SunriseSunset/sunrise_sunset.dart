@@ -5,7 +5,7 @@ import 'package:weather_app2/domain/entities/Weather/weather.dart';
 import 'package:weather_app2/presentation/widgets/DayWeatherDetail/SunriseSunset/AnimatedDay/animated_day.dart';
 
 class SunriseSunset extends StatelessWidget {
-  final Weather weather;
+  final WeatherWithHourlyForecast weather;
 
   SunriseSunset(this.weather);
 

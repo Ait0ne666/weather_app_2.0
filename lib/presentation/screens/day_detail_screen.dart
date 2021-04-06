@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_app2/domain/entities/Weather/weather.dart';
 import 'package:weather_app2/presentation/bloc/CitiesBloc/cities_bloc.dart';
 import 'package:weather_app2/presentation/bloc/CitiesBloc/cities_state.dart';
+import 'package:weather_app2/presentation/bloc/SettingsBloc/setting_bloc.dart';
+import 'package:weather_app2/presentation/bloc/SettingsBloc/settings_state.dart';
 import 'package:weather_app2/presentation/navigation/NavigationRouter.dart';
 import 'package:weather_app2/presentation/screens/ScreenWrapper/screen-wrapper.dart';
 import 'package:weather_app2/presentation/widgets/DayWeatherDetail/day_weather_detail.dart';
@@ -26,8 +28,14 @@ class DayDetail extends StatelessWidget {
           child:
               BlocBuilder<CitiesBloc, CitiesState>(builder: (context, state) {
             if (state is CitiesLoaded || state is CitiesUpdating) {
-              return DayWeatherDetail(
-                dayWeather: dayWeather,
+              return BlocBuilder<SettingsBloc, SettingsState>(
+                builder: (context, state) {
+                  print(state);
+                  return DayWeatherDetail(
+                    dayWeather: dayWeather,
+                    widgets: state.weatherDetailCards,
+                  );
+                },
               );
             } else {
               return FailureScreen();

@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:weather_app2/domain/entities/Weather/weather.dart';
+import 'package:image/image.dart' as image;
 
 const assets = [
   'assets/128/day_clear.png',
@@ -14,17 +15,26 @@ const assets = [
 ];
 
 class AnimatedDay extends StatelessWidget {
-  final Weather weather;
+  final WeatherWithHourlyForecast weather;
 
   AnimatedDay(this.weather);
 
   Future<ui.Image> loadImage(String asset) async {
     final ByteData data = await rootBundle.load(asset);
+
+    // var immutableBuffer =
+    //     await ui.ImmutableBuffer.fromUint8List(data.buffer.asUint8List());
+    // var descriptor = ui.ImageDescriptor.raw(immutableBuffer,
+    //     width: 40, height: 40, pixelFormat: ui.PixelFormat.bgra8888);
+    // final ui.Codec codec = await descriptor.instantiateCodec(
+    //   targetHeight: 20,
+    //   targetWidth: 20,
+    // );
     final ui.Codec codec = await ui.instantiateImageCodec(
-      data.buffer.asUint8List(),
-      targetHeight: 20,
-      targetWidth: 20,
-    );
+        data.buffer.asUint8List(),
+        targetHeight: 20,
+        targetWidth: 20,
+        allowUpscaling: false);
     final ui.FrameInfo fi = await codec.getNextFrame();
 
     return fi.image;
