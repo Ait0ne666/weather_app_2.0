@@ -1,6 +1,7 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -49,12 +50,11 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     citiesBloc = CitiesBloc(
-      getCity: GetCity(
-        repository: CityRepositoryImpl(RemoteDataSource()),
-        locationService: LocationService(),
-      ),
-      networkInfo: NetworkInfo()
-    );
+        getCity: GetCity(
+          repository: CityRepositoryImpl(RemoteDataSource()),
+          locationService: LocationService(),
+        ),
+        networkInfo: NetworkInfo());
     citiesBloc.add(AppStarted());
     settingsBloc = SettingsBloc();
     super.initState();
@@ -116,7 +116,14 @@ class _MyAppState extends State<MyApp> {
               }
             },
             child: ScreenWrapper(
-              children: [],
+              children: [
+                Center(
+                  child: Container(
+                    child: SvgPicture.asset('assets/SVG/day_partial_cloud.svg',
+                        width: 200, height: 200),
+                  ),
+                ),
+              ],
             ),
           )),
     );
